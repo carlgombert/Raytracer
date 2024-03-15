@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 
 public class Window {
 	
-	public Window(int width, int height, String title, Raytracer raytracer)
+	public Window(int width, int height, String title, Engine engine)
 	{
 		JFrame frame = new JFrame(title); 
 		
@@ -19,7 +19,7 @@ public class Window {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		
-		frame.add(raytracer);
+		frame.add(engine);
 		frame.setVisible(true);
 	}
 }
