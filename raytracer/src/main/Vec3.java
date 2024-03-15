@@ -1,5 +1,8 @@
 package main;
 
+/**
+ * Vec3 represents a 3 dimentional vector used for colors, locations, directions and offsets
+ */
 public class Vec3 {
 	
 	private float[] e = new float[3];

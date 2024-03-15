@@ -8,9 +8,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Raytracer generates the raytraced image for the engine
+ */
 public class Raytracer {
-	private BufferedImage image;
 	
+	// raytraced image
+	private BufferedImage image; 
+	
+	//image in the form of a 2D pixel array
 	private Color[][] imageData;
 	
 	private int width, height;
@@ -26,27 +32,50 @@ public class Raytracer {
 		imageData = new Color[height][width];
 	}
 	
-	public boolean hitSphere(Vec3 center, float radius, Ray r) {
+	/**
+	 * determines if given ray intersects a sphere
+	 *
+	 * @param center 3D position of sphere center
+	 * @param radius radius of the sphere
+	 * @param r ray checking for intersection
+	 * @return         boolean if the sphere is hit or not
+	 */
+	public float hitSphere(Vec3 center, float radius, Ray r) {
 		Vec3 oc = r.getOrigin().subtract(center);
 		float a = r.getDirection().dot(r.getDirection());
 		float b = 2.0f * oc.dot(r.getDirection());
 		float c = oc.dot(oc) - radius * radius;
 		float discriminant = b*b - 4*a*c;
-		return discriminant > 0;
+		if(discriminant < 0) {
+			return -1f;
+		}
+		else {
+			return (-b - (float)Math.sqrt(discriminant))  / (2f * a);			
+		}
 	}
 	
+	/**
+	 * generates the color for a given ray
+	 *
+	 * @param r ray for determining color
+	 * @return         color for the given ray
+	 */
 	public Vec3 color(Ray r) {
-		
-		if(hitSphere(sphere, sphereRadius, r)) {
-			return new Vec3(1f, 0f , 0f);
+		float t = hitSphere(sphere, sphereRadius, r);
+		if(t > 0) {
+			Vec3 n = (r.pointAt(t).subtract(new Vec3(0f, 0f, -1))).unitVector();
+			Vec3 col = new Vec3(n.x()+1, n.y()+1, n.z()+1);
+			return col.multiply(0.5f);
 		}
 		
-		
 		Vec3 unitDir = r.getDirection().unitVector();
-		float t = 0.5f * (unitDir.y() + 1.0f);
+		t = 0.5f * (unitDir.y() + 1.0f);
 		return (new Vec3(1.0f, 1.0f, 1.0f)).multiply((1.0f - t)).add((new Vec3(0.5f, 0.7f, 1.0f)).multiply(t));
 	}
 	
+	/**
+	 * generates the image in the form of a 2d pixel array
+	 */
 	public void generateImageData() {
 		
 		Vec3 lowerLeftCorner = new Vec3(-2.0f, -1.0f, -1.0f);
@@ -74,7 +103,10 @@ public class Raytracer {
 	    }
 	}
 	
-	public void Draw() {
+	/**
+	 * draws the image from the form of a 2d pixel array to a buffered image
+	 */
+	public void draw() {
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
 		for(int y = height-1; y >= 0; y--){
@@ -95,6 +127,9 @@ public class Raytracer {
 		
 	}
 	
+	/**
+	 * renders the image to screen
+	 */
 	public void render(Graphics g) {
 		g.drawImage(image, 0, 0, null);
 	}

@@ -23,7 +23,7 @@ public class Engine extends Canvas {
 		
 		image.generateImageData();
 		
-		image.Draw();
+		image.draw();
 		
 		new Window(WIDTH, HEIGHT, "raytracer", this);
 	}
