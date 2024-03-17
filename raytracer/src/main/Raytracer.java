@@ -94,12 +94,17 @@ public class Raytracer {
 		int ns = 100;
 		
 		List<Hitable> list = new ArrayList<Hitable>();
-		list.add(new Sphere(new Vec3(0f, 0f, -1f), 0.5f, new Lambertian(new Vec3(0.560784313725f, 0.450980392157f, 0.619607843137f))));
-		list.add(new Sphere(new Vec3(0f, -100.5f, -1f), 100f, new Lambertian(new Vec3(0.8f, 0.8f, 0.8f))));
-		list.add(new Sphere(new Vec3(2f, 0f, -2f), 0.5f, new Metal(new Vec3(0.8f, 0.6f, 0.2f))));
+		list.add(new Sphere(new Vec3(0f, -0.1f, -1f), 0.4f, new Metal(new Vec3(0.8, 0.8, 0.8))));
+		list.add(new Sphere(new Vec3(0f, -400.5f, -1f), 400f, new Metal(new Vec3(0.6f, 0.7f, 0.9f))));
+		list.add(new Sphere(new Vec3(2f, 0f, -2f), 0.5f, new Metal(new Vec3(0.4f, 0.4f, 0.4f))));
 		list.add(new Sphere(new Vec3(1f, -0.3f, -0.7f), 0.2f, new Metal(new Vec3(0.450980392157f, 0.619607843137f, 0.560784313725f))));
 		list.add(new Sphere(new Vec3(-1f, 0f, -1f), 0.5f, new Metal(new Vec3(0.8f, 0.8f, 0.8f))));
 		list.add(new Sphere(new Vec3(-1.2f, -0.35f, -0.4f), 0.15f, new Lambertian(new Vec3(0.6f, 0.2f, 0.2f))));
+		list.add(new Sphere(new Vec3(-0.5f, -0.4f, 0f), 0.1f, new Lambertian(new Vec3(0.6f, 0.6f, 0.7f))));
+		list.add(new Sphere(new Vec3(0.4f, -0.4f, -0.2f), 0.1f, new Lambertian(new Vec3(0.8f, 0.6f, 0.2f))));
+		list.add(new Sphere(new Vec3(0.2f, -0.4f, -0.3f), 0.1f, new Lambertian(new Vec3(0.8f, 0.8f, 0.2f))));
+		list.add(new Sphere(new Vec3(-4f, 0.5f, -4f), 1f, new Lambertian(new Vec3(0.8f, 0.6f, 0.2f))));
+		list.add(new Sphere(new Vec3(-0.1f, -0.4f, 0.0f), 0.1f, new Lambertian(new Vec3(0.1f, 0.1f, 0.3f))));
 		
 		Hitable world = new HitableList(list);
 		
@@ -152,7 +157,7 @@ public class Raytracer {
         	}
         }
 		
-		File outputfile = new File("progress3.jpg");
+		File outputfile = new File("progress4.jpg");
 		try {
 			ImageIO.write(image, "jpg", outputfile);
 		} catch (IOException e) {

@@ -25,7 +25,7 @@ public class Engine extends Canvas {
 		
 		image.draw();
 		
-		new Window(WIDTH, HEIGHT, "raytracer", this);
+		//new Window(WIDTH, HEIGHT, "raytracer", this);
 	}
 	
 	public void paint(Graphics g) {
