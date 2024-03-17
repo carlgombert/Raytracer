@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 
 public class Engine extends Canvas {
 	
-	public static final int WIDTH = 800, HEIGHT = 400;
+	public static final int WIDTH = 3200, HEIGHT = 1600;
 	
 	private static final long serialVersionUID = -995199956205934258L;
 	

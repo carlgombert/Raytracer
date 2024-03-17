@@ -15,6 +15,12 @@ public class Vec3 {
 		e[2] = e2;
 	}
 	
+	public Vec3(double e0, double e1, double e2) {
+		e[0] = (float)e0;
+		e[1] = (float)e1;
+		e[2] = (float)e2;
+	}
+	
 	public float x() {return e[0];}
 	
 	public float y() {return e[1];}
@@ -31,6 +37,9 @@ public class Vec3 {
 		return (float) Math.sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]); 	
 	}
 	
+	public float lengthSquared() { 
+		return (float)(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]); 	
+	}
 	
 	public float get(int i) {
         return e[i];
@@ -108,6 +117,13 @@ public class Vec3 {
         e[0] *= t;
         e[1] *= t;
         e[2] *= t;
+        return this;
+	}
+	
+	public Vec3 divideEquals(float t) {
+		e[0] /= t;
+        e[1] /= t;
+        e[2] /= t;
         return this;
 	}
 	

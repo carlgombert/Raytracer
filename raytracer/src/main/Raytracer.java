@@ -5,8 +5,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+
+import main.materials.Lambertian;
+import main.materials.Metal;
 
 /**
  * Raytracer generates the raytraced image for the engine
@@ -21,9 +26,10 @@ public class Raytracer {
 	
 	private int width, height;
 	
-	private Vec3 sphere = new Vec3(0f,0f,-1f);
-	private float sphereRadius = 0.5f;
+	public static HitRecord rec;
 	
+	public static Ray scattered;
+	public static Vec3 attenuation;
 	
 	public Raytracer(int width, int height) {
 		this.width = width;
@@ -40,7 +46,7 @@ public class Raytracer {
 	 * @param r ray checking for intersection
 	 * @return         boolean if the sphere is hit or not
 	 */
-	public float hitSphere(Vec3 center, float radius, Ray r) {
+	/*public float hitSphere(Vec3 center, float radius, Ray r) {
 		Vec3 oc = r.getOrigin().subtract(center);
 		float a = r.getDirection().dot(r.getDirection());
 		float b = 2.0f * oc.dot(r.getDirection());
@@ -52,7 +58,7 @@ public class Raytracer {
 		else {
 			return (-b - (float)Math.sqrt(discriminant))  / (2f * a);			
 		}
-	}
+	}/*
 	
 	/**
 	 * generates the color for a given ray
@@ -60,17 +66,24 @@ public class Raytracer {
 	 * @param r ray for determining color
 	 * @return         color for the given ray
 	 */
-	public Vec3 color(Ray r) {
-		float t = hitSphere(sphere, sphereRadius, r);
-		if(t > 0) {
-			Vec3 n = (r.pointAt(t).subtract(new Vec3(0f, 0f, -1))).unitVector();
-			Vec3 col = new Vec3(n.x()+1, n.y()+1, n.z()+1);
-			return col.multiply(0.5f);
-		}
+	public Vec3 color(Ray r, Hitable world, int depth) {
+		rec = new HitRecord();
 		
-		Vec3 unitDir = r.getDirection().unitVector();
-		t = 0.5f * (unitDir.y() + 1.0f);
-		return (new Vec3(1.0f, 1.0f, 1.0f)).multiply((1.0f - t)).add((new Vec3(0.5f, 0.7f, 1.0f)).multiply(t));
+		if(world.hit(r, 0.001f, Float.MAX_VALUE, rec)) {
+			attenuation = new Vec3();
+			scattered = new Ray();
+			if(depth < 50 && rec.mat.scatter(r, rec, attenuation, scattered)) {
+				return attenuation.multiply(color(scattered, world, depth+1));
+			}
+			else {
+				return new Vec3(0, 0, 0);
+			}
+		}
+		else {
+			Vec3 unitDir = r.getDirection().unitVector();
+			float t = 0.5f * (unitDir.y() + 1.0f);
+			return (new Vec3(1.0f, 1.0f, 1.0f)).multiply((1.0f - t)).add((new Vec3(0.5f, 0.7f, 1.0f)).multiply(t));
+		}
 	}
 	
 	/**
@@ -78,26 +91,48 @@ public class Raytracer {
 	 */
 	public void generateImageData() {
 		
-		Vec3 lowerLeftCorner = new Vec3(-2.0f, -1.0f, -1.0f);
-		Vec3 horizontal = new Vec3(4.0f, 0.0f, 0.0f);
-		Vec3 vertical = new Vec3(0.0f, 2.0f, 0.0f);
-		Vec3 origin = new Vec3(0.0f, 0.0f, 0.0f);
+		int ns = 100;
+		
+		List<Hitable> list = new ArrayList<Hitable>();
+		list.add(new Sphere(new Vec3(0f, 0f, -1f), 0.5f, new Lambertian(new Vec3(0.560784313725f, 0.450980392157f, 0.619607843137f))));
+		list.add(new Sphere(new Vec3(0f, -100.5f, -1f), 100f, new Lambertian(new Vec3(0.8f, 0.8f, 0.8f))));
+		list.add(new Sphere(new Vec3(2f, 0f, -2f), 0.5f, new Metal(new Vec3(0.8f, 0.6f, 0.2f))));
+		list.add(new Sphere(new Vec3(1f, -0.3f, -0.7f), 0.2f, new Metal(new Vec3(0.450980392157f, 0.619607843137f, 0.560784313725f))));
+		list.add(new Sphere(new Vec3(-1f, 0f, -1f), 0.5f, new Metal(new Vec3(0.8f, 0.8f, 0.8f))));
+		list.add(new Sphere(new Vec3(-1.2f, -0.35f, -0.4f), 0.15f, new Lambertian(new Vec3(0.6f, 0.2f, 0.2f))));
+		
+		Hitable world = new HitableList(list);
+		
+		Camera cam = new Camera();
 		
 		for(int y = height-1; y >= 0; y--){
 	        for(int x = 0; x < width; x++){
-	        	float u = (float)x / (float)width;
-	        	float v = (float)y / (float)height;
+	        	Vec3 col = new Vec3(0f, 0f, 0f);
 	        	
-	        	Ray r = new Ray(origin, lowerLeftCorner.add(horizontal.multiply(u)).add(vertical.multiply(v)));
+	        	// averaging colors in a section for a smoother blend between colors instead of a hard
+	        	// pixel cutoff
+	        	for(int s = 0; s < ns; s++) {
+	        		float u = (float)(x+Math.random()) / (float)width;
+		        	float v = (float)(y+Math.random()) / (float)height;
+		        	
+		        	Ray r = cam.getRay(u, v);
+		        	
+		        	Vec3 p = r.pointAt(2f);
+		        	
+		        	col.addEquals(color(r, world, 0));
+	        		
+	        	}
 	        	
-	        	Vec3 col = color(r);
+	        	col.divideEquals((float)ns);
+	        	
+	        	col = new Vec3(Math.sqrt(col.r()), Math.sqrt(col.g()), Math.sqrt(col.b()));
 	        	
 	            int ir = (int)(255.99 * col.r());
 	            int ig = (int)(255.99 * col.g());
 	            int ib = (int)(255.99 * col.b());
 	            
 	            
-	            imageData[y][x] = new Color(ir, ig, ib);
+	            imageData[height-y-1][x] = new Color(ir, ig, ib);
 	         
 	        }
 	    }
@@ -117,13 +152,13 @@ public class Raytracer {
         	}
         }
 		
-		/*File outputfile = new File("testImage.jpg");
+		File outputfile = new File("progress3.jpg");
 		try {
 			ImageIO.write(image, "jpg", outputfile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 	}
 	
