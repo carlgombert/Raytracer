@@ -5,3 +5,4 @@ This project is still in progress.
   
 ## Sample Images:
 ![This is an image](https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/progress3.jpg)
+![This is an image](https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/progress4.jpg)
