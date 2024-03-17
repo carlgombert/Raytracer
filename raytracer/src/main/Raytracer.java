@@ -157,13 +157,13 @@ public class Raytracer {
         	}
         }
 		
-		File outputfile = new File("progress4.jpg");
+		/*File outputfile = new File("progress4.jpg");
 		try {
 			ImageIO.write(image, "jpg", outputfile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 	

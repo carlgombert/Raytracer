@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 
 public class Engine extends Canvas {
 	
-	public static final int WIDTH = 3200, HEIGHT = 1600;
+	public static final int WIDTH = 800, HEIGHT = 400;
 	
 	private static final long serialVersionUID = -995199956205934258L;
 	
@@ -25,7 +25,7 @@ public class Engine extends Canvas {
 		
 		image.draw();
 		
-		//new Window(WIDTH, HEIGHT, "raytracer", this);
+		new Window(WIDTH, HEIGHT, "raytracer", this);
 	}
 	
 	public void paint(Graphics g) {
