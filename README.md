@@ -4,7 +4,8 @@ Built and rendered in Java, this ray tracing engine renders physically accurate 
 This project is still in progress.  
 
 ## Interactive Raytracer Demo:
-  
+  [<img src="https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/thumbnail.png" width="50%">](https://www.youtube.com/watch?v=t9IvcFt2NzY)  
+The interactive raytracer allows the user to move around and view the scene from different angles. I have yet to implement GPU acceleration so the rendering quality is significantly hindered. Generating the higher quality images below takes around 20 seconds per frame.
   
 ## Sample Images:
 ![This is an image](https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/progress3.jpg)
