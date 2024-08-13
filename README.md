@@ -2,6 +2,7 @@
 Raytracing engine with help from the series [Ray Tracing in One Weekend](https://raytracing.github.io/) by Peter Shirley.  
 Built and rendered in Java, this ray tracing engine renders physically accurate light, shadows, and reflections.  
 This project is still in progress.  
+I would still like to add custom light sources, fog, texture mapping, motion blur and much more.  
 
 ## Interactive Raytracer Demo:
   [<img src="https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/thumbnail.png" width="50%">](https://www.youtube.com/watch?v=t9IvcFt2NzY)  
