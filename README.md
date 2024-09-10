@@ -7,7 +7,7 @@ I would also like to add custom light sources, fog, texture mapping, motion blur
 
 ## Interactive Raytracer Demo:
   [<img src="https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/thumbnail.png" width="50%">](https://www.youtube.com/watch?v=t9IvcFt2NzY)  
-The interactive raytracer allows the user to move around and view the scene from different angles. I have yet to implement GPU acceleration so the rendering quality is significantly hindered. Generating the higher quality images below takes around 20 seconds per frame.
+The interactive raytracer allows the user to move around and view the scene from different angles. I have yet to implement GPU acceleration so the rendering quality is significantly hindered. Generating the higher quality images below takes around 20 seconds per frame. The interactive mode allows the user to enter C and take high quality captures of the current display as they move around.
   
 ## Sample Images:
 ![This is an image](https://github.com/carlgombert/Raytracer/blob/main/raytracer/Images/progress3.jpg)
