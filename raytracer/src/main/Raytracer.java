@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import main.materials.Dielectric;
 import main.materials.Lambertian;
 import main.materials.Metal;
 
@@ -23,6 +24,7 @@ public class Raytracer {
 	
 	//image in the form of a 2D pixel array
 	private Color[][] imageData;
+	private Color[][] highDefImageData;
 	
 	private int width, height;
 	
@@ -35,7 +37,8 @@ public class Raytracer {
 		this.width = width;
 		this.height = height;
 		
-		imageData = new Color[height][width];
+		imageData = new Color[height/2][width/2];
+		highDefImageData = new Color[height][width];
 	}
 	
 	/**
@@ -67,6 +70,9 @@ public class Raytracer {
 	 * @return         color for the given ray
 	 */
 	public Vec3 color(Ray r, Hitable world, int depth) {
+		if(r == null) {
+			System.out.println("null ray at color?");
+		}
 		rec = new HitRecord();
 		
 		if(world.hit(r, 0.001f, Float.MAX_VALUE, rec)) {
@@ -89,13 +95,20 @@ public class Raytracer {
 	/**
 	 * generates the image in the form of a 2d pixel array
 	 */
-	public void generateImageData() {
+	public void generateImageData(boolean highDef) {
 		
+		// image smoothness, for single image 100 recommended, otherwise keep in the 1-3 range
 		int ns = 100;
+		if(!highDef) {
+			ns = 1;
+			width = width/2;
+			height = height/2;
+		}
 		
 		List<Hitable> list = new ArrayList<Hitable>();
-		list.add(new Sphere(new Vec3(0f, -0.1f, -1f), 0.4f, new Metal(new Vec3(0.8, 0.8, 0.8))));
-		list.add(new Sphere(new Vec3(0f, -400.5f, -1f), 400f, new Metal(new Vec3(0.6f, 0.7f, 0.9f))));
+		list.add(new Sphere(new Vec3(0f, -400.5f, -1f), 400f, new Lambertian(new Vec3(0.8f, 0.8f, 0.8f))));
+		list.add(new Sphere(new Vec3(0f, -0.1f, -1f), 0.4f, new Dielectric(2.5)));
+		//list.add(new Sphere(new Vec3(0f, -400.5f, -1f), 400f, new Metal(new Vec3(0.6f, 0.7f, 0.9f))));
 		list.add(new Sphere(new Vec3(2f, 0f, -2f), 0.5f, new Metal(new Vec3(0.4f, 0.4f, 0.4f))));
 		list.add(new Sphere(new Vec3(1f, -0.3f, -0.7f), 0.2f, new Metal(new Vec3(0.450980392157f, 0.619607843137f, 0.560784313725f))));
 		list.add(new Sphere(new Vec3(-1f, 0f, -1f), 0.5f, new Metal(new Vec3(0.8f, 0.8f, 0.8f))));
@@ -136,11 +149,22 @@ public class Raytracer {
 	            int ig = (int)(255.99 * col.g());
 	            int ib = (int)(255.99 * col.b());
 	            
-	            
-	            imageData[height-y-1][x] = new Color(ir, ig, ib);
+	            if(!highDef) {
+	            	imageData[height-y-1][x] = new Color(ir, ig, ib);
+	            }
+	            else {
+	            	highDefImageData[height-y-1][x] = new Color(ir, ig, ib);
+	            }
 	         
 	        }
 	    }
+		
+		if(!highDef) {
+			width = width*2;
+			height = height*2;
+		}
+		
+		System.out.println("generated");
 	}
 	
 	/**
@@ -151,12 +175,14 @@ public class Raytracer {
 		
 		for(int y = height-1; y >= 0; y--){
 	        for(int x = 0; x < width; x++){
-	        	int rgb = imageData[y][x].getRGB();
+	        	int rgb = imageData[y/2][x/2].getRGB();
 	        	
 	        	image.setRGB(x, y, rgb);
+	        	
         	}
         }
-		
+
+		System.out.println("drawn");
 		/*File outputfile = new File("progress4.jpg");
 		try {
 			ImageIO.write(image, "jpg", outputfile);
@@ -165,6 +191,21 @@ public class Raytracer {
 			e.printStackTrace();
 		}*/
 		
+	}
+	
+	public void drawHighDef() {
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		
+		for(int y = height-1; y >= 0; y--){
+	        for(int x = 0; x < width; x++){
+	        	int rgb = highDefImageData[y][x].getRGB();
+	        	
+	        	image.setRGB(x, y, rgb);
+	        	
+        	}
+        }
+
+		System.out.println("drawn high def");
 	}
 	
 	/**

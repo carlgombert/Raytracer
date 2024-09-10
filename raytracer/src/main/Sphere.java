@@ -13,6 +13,9 @@ public class Sphere extends Hitable{
 	}
 	
 	public boolean hit(Ray r, float tMin, float tMax, HitRecord rec) {
+		if(r == null) {
+			System.out.println("null ray at sphere?");
+		}
 		Vec3 oc = r.getOrigin().subtract(center);
 		float a = r.getDirection().dot(r.getDirection());
 		float b = oc.dot(r.getDirection());
@@ -23,7 +26,8 @@ public class Sphere extends Hitable{
 			if(temp < tMax && temp > tMin) {
 				rec.t = temp;
 				rec.p = r.pointAt(rec.t);
-				rec.normal = (rec.p.subtract(center)).divide(radius);
+				Vec3 outward_normal = (rec.p.subtract(center)).divide(radius);
+				rec.setFaceNormal(r, outward_normal);
 				rec.mat = mat;
 				Raytracer.rec = rec;
 				return true;
@@ -32,7 +36,8 @@ public class Sphere extends Hitable{
 			if(temp < tMax && temp > tMin) {
 				rec.t = temp;
 				rec.p = r.pointAt(rec.t);
-				rec.normal = (rec.p.subtract(center)).divide(radius);
+				Vec3 outward_normal = (rec.p.subtract(center)).divide(radius);
+				rec.setFaceNormal(r, outward_normal);
 				rec.mat = mat;
 				Raytracer.rec = rec;
 				return true;

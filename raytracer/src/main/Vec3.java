@@ -145,4 +145,12 @@ public class Vec3 {
 		return this.subtract(n.multiply(this.dot(n)*2));
 	}
 	
+	public Vec3 refract(Vec3 n, float etai_over_etat) {
+		Vec3 uv = this;
+	    double cos_theta = Math.min((double)uv.multiply(-1).dot(n), 1.0);
+	    Vec3 r_out_perp =  (uv.add(n.multiply((float)cos_theta))).multiply(etai_over_etat);
+	    Vec3 r_out_parallel = n.multiply(-1.0f * (float)Math.sqrt(Math.abs(1.0 - r_out_perp.lengthSquared())));
+	    return r_out_perp.add(r_out_parallel);
+	}
+	
 }

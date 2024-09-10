@@ -11,6 +11,9 @@ public class HitableList extends Hitable{
 	}
 	
 	public boolean hit(Ray r, float tMin, float tMax, HitRecord rec) {
+		if(r == null) {
+			System.out.println("null ray at hit list?");
+		}
 		HitRecord tempRec = new HitRecord();
 		boolean hitAnything = false;
 		float closestSoFar = tMax;

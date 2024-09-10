@@ -1,13 +1,14 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 
 import javax.swing.JFrame;
 
 
 public class Window {
 	
-	public Window(int width, int height, String title, Engine engine)
+	public Window(int width, int height, String title, Canvas engine, boolean killable)
 	{
 		JFrame frame = new JFrame(title); 
 		
@@ -15,7 +16,9 @@ public class Window {
 		
 		frame.setSize(width, height);
 		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		if(killable) {
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		}
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		
